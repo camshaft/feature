@@ -5,7 +5,8 @@
   "version": "0.0.1",
   "keywords": [],
   "dependencies": {
-    "yields/store": "*"
+    "yields/store": "*",
+    "component/cookie": "*"
   },
   "development": {},
   "license": "MIT",

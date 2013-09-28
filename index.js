@@ -3,6 +3,7 @@
  */
 
 var store = require('store');
+var cookie = require('cookie');
 
 /**
  * Defines
@@ -19,7 +20,10 @@ var KEY = 'features';
  */
 
 exports = module.exports = function(feature) {
-  return !!get()[feature];
+  var val = get()[feature];
+  return !!(typeof val === 'undefined'
+    ? ~(cookie(KEY) || '').split(',').indexOf(feature)
+    : val);
 };
 
 /**
@@ -46,6 +50,21 @@ exports.enable = function(feature) {
  */
 
 exports.disable = function(feature) {
+  var features = get();
+  features[feature] = 0;
+  set(features);
+  return exports;
+};
+
+/**
+ * Remove an override
+ *
+ * @param {String} feature
+ * @return {feature}
+ * @api public
+ */
+
+exports.remove = function(feature) {
   var features = get();
   delete features[feature];
   set(features);
