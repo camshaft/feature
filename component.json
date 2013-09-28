@@ -1,0 +1,16 @@
+{
+  "name": "feature",
+  "repo": "CamShaft/feature",
+  "description": "simple client-side feature switches",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {
+    "yields/store": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}
