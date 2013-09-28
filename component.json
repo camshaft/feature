@@ -6,7 +6,8 @@
   "keywords": [],
   "dependencies": {
     "yields/store": "*",
-    "component/cookie": "*"
+    "component/cookie": "*",
+    "component/indexof": "*"
   },
   "development": {},
   "license": "MIT",

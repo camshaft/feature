@@ -4,6 +4,7 @@
 
 var store = require('store');
 var cookie = require('cookie');
+var index = require('indexof');
 
 /**
  * Defines
@@ -21,9 +22,8 @@ var KEY = 'features';
 
 exports = module.exports = function(feature) {
   var val = get()[feature];
-  return !!(typeof val === 'undefined'
-    ? ~(cookie(KEY) || '').split(',').indexOf(feature)
-    : val);
+  if (typeof val !== 'undefined') return !!val
+  return cookieValue(feature);
 };
 
 /**
@@ -89,4 +89,14 @@ function get() {
 
 function set(value) {
   store(KEY, value);
+};
+
+/**
+ * Get the cookie value
+ */
+
+var features = (cookie(KEY) || '').split(',');
+
+function cookieValue(feature) {
+  return !!~index(features, feature);
 };
