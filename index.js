@@ -16,13 +16,14 @@ var KEY = 'features';
  * Check if the feature is enabled
  *
  * @param {String} feature
+ * @param {Boolean} ignoreCookie
  * @return {Boolean}
  * @api public
  */
 
-exports = module.exports = function(feature) {
+exports = module.exports = function(feature, ignoreCookie) {
   var val = get()[feature];
-  if (typeof val !== 'undefined') return !!val
+  if (typeof val !== 'undefined' || ignoreCookie) return !!val
   return cookieValue(feature);
 };
 
