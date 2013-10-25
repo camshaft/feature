@@ -85,7 +85,7 @@ exports.remove = function(feature) {
  */
 
 exports.reset = function() {
-  store(null);
+  set(null);
   each(emitter._callbacks, function(feature) {
     emitter.emit(feature, exports(feature));
   });
