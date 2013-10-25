@@ -7,7 +7,9 @@
   "dependencies": {
     "yields/store": "*",
     "component/cookie": "*",
-    "component/indexof": "*"
+    "component/indexof": "*",
+    "component/emitter": "*",
+    "component/each": "*"
   },
   "development": {},
   "license": "MIT",
