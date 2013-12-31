@@ -9,12 +9,15 @@
     "component/cookie": "*",
     "component/indexof": "*",
     "component/emitter": "*",
-    "component/each": "*"
+    "component/each": "*",
+    "matthewp/keys": "*",
+    "component/select": "*"
   },
   "development": {},
   "license": "MIT",
   "main": "index.js",
   "scripts": [
     "index.js"
-  ]
+  ],
+  "remotes": []
 }

@@ -6,6 +6,8 @@ var store = require('store');
 var cookie = require('cookie');
 var index = require('indexof');
 var each = require('each');
+var select = require('select');
+var keys = require('keys');
 var Emitter = require('emitter');
 
 /**
@@ -13,6 +15,12 @@ var Emitter = require('emitter');
  */
 
 var emitter = new Emitter;
+
+/**
+ * Create a list emitter
+ */
+
+var listEmitter = new Emitter;
 
 /**
  * Check if the feature is enabled
@@ -103,10 +111,41 @@ exports.reset = function() {
  */
 
 exports.watch = function(feature, fn) {
+  var listHasChanged = !emitter.hasListeners(feature);
   emitter.on(feature, fn);
   fn(exports(feature));
+  if (listHasChanged) notify();
   return function() {
     emitter.off(feature, fn);
+    if (!emitter.hasListeners(feature)) notify();
+  };
+
+  function notify() {
+    listEmitter.emit('change', exports.list());
+  }
+};
+
+/**
+ * Lists the current watchers
+ */
+
+exports.list = function() {
+  if (!emitter._callbacks) return [];
+  var _callbacks = emitter._callbacks;
+  return select(keys(_callbacks), function(feature) {
+    return !!_callbacks[feature].length;
+  });
+};
+
+/**
+ * Watch the watchers list
+ */
+
+exports.watchList = function(fn) {
+  listEmitter.on('change', fn);
+  fn(exports.list());
+  return function() {
+    listEmitter.off('change', fn);
   };
 };
 
