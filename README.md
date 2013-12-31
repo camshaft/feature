@@ -53,6 +53,10 @@ var unwatch = feature('my-cool-feature', function(enabled){
 setTimeout(unwatch, 1000);
 ```
 
+## feature.watchList(cb)
+
+Call a function anytime the watch list changes. This is helpful for creating a list of available features on the fly. This returns a function to stop listening.
+
 ## Example
 
 ```js
