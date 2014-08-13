@@ -23,6 +23,12 @@ var emitter = new Emitter;
 var listEmitter = new Emitter;
 
 /**
+ * Stores defaults for features; doesn't persist
+ */
+
+var defaults = {};
+
+/**
  * Check if the feature is enabled
  *
  * @param {String} feature
@@ -34,8 +40,9 @@ var listEmitter = new Emitter;
 exports = module.exports = function(feature, ignoreCookie) {
   var features = get();
   var enabled = features[feature];
-  if (typeof enabled !== 'undefined' || ignoreCookie) return !!enabled;
-  return cookieValue(feature);
+  if (typeof enabled !== 'undefined' || ignoreCookie) return enabled;
+  if(cookieValue(feature)) return true;
+  return defaults[feature] || false;
 };
 
 /**
@@ -52,6 +59,16 @@ exports.set = function(feature, value) {
   features[feature] = value;
   set(features);
   emitter.emit(feature, value);
+  return exports;
+};
+
+/**
+ * Set a default for a feature
+ */
+
+exports.setDefault = function(feature, value) {
+  defaults[feature] = value;
+  emitter.emit(feature, exports(feature));
   return exports;
 };
 
@@ -107,6 +124,7 @@ exports.reset = function() {
   each(emitter._callbacks, function(feature) {
     emitter.emit(feature, exports(feature));
   });
+  notify();
   return exports;
 };
 
@@ -134,10 +152,6 @@ exports.watch = function(feature, variant, fn) {
     emitter.off(feature, fn);
     if (!emitter.hasListeners(feature)) notify();
   };
-
-  function notify() {
-    listEmitter.emit('change', exports.list());
-  }
 };
 
 /**
@@ -161,7 +175,7 @@ exports.options = function(feature) {
   var opts = [];
   each(subs, function(sub) {
     var v = sub._variant;
-    if (!~opts.indexOf(v)) opts.push(v);
+    if (!~index(opts, v)) opts.push(v);
   });
   return opts;
 };
@@ -232,6 +246,10 @@ function encode(obj) {
       ('*' + value + '|')) + key;
   });
   return str;
+}
+
+function notify() {
+  listEmitter.emit('change', exports.list());
 }
 
 /**
