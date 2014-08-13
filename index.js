@@ -39,6 +39,23 @@ exports = module.exports = function(feature, ignoreCookie) {
 };
 
 /**
+ * Set a feature value
+ *
+ * @param {String} feature
+ * @param {String} value
+ * @return {feature}
+ * @api public
+ */
+
+exports.set = function(feature, value) {
+  var features = get();
+  features[feature] = value;
+  set(features);
+  emitter.emit(feature, value);
+  return exports;
+};
+
+/**
  * Enable a feature
  *
  * @param {String} feature
@@ -47,11 +64,7 @@ exports = module.exports = function(feature, ignoreCookie) {
  */
 
 exports.enable = function(feature) {
-  var features = get();
-  features[feature] = true;
-  set(features);
-  emitter.emit(feature, true);
-  return exports;
+  return exports.set(feature, true);
 };
 
 /**
@@ -63,11 +76,7 @@ exports.enable = function(feature) {
  */
 
 exports.disable = function(feature) {
-  var features = get();
-  features[feature] = false;
-  set(features);
-  emitter.emit(feature, false);
-  return exports;
+  return exports.set(feature, false);
 };
 
 /**
@@ -198,7 +207,9 @@ function encode(obj) {
   if (!obj) return obj;
   var str = '';
   each(obj, function(key, value) {
-    str = str + (value ? '*' : '!') + key;
+    str += (typeof value === 'boolean' ?
+      (value ? '*' : '!') :
+      ('*' + value + '|')) + key;
   });
   return str;
 }
@@ -214,7 +225,13 @@ function decode(str) {
   // Remove the first space if it's ""
   if (list[0] === '') list.shift();
   for (var i = 0; i < list.length; i += 2) {
-    obj[list[i + 1]] = list[i] === '*';
+    var key = list[i + 1];
+    var parts = key.split('|');
+    if (parts.length === 1) {
+      obj[key] = list[i] === '*';
+    } else {
+      obj[parts[1]] = parts[0];
+    }
   };
   return obj;
 }
