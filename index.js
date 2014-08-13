@@ -114,12 +114,18 @@ exports.reset = function() {
  * Watch for any changes
  *
  * @param {String} feature
+ * @param {String?} variant
  * @param {Function} fn
  * @return {Function}
  * @api public
  */
 
-exports.watch = function(feature, fn) {
+exports.watch = function(feature, variant, fn) {
+  if (typeof variant === 'function') {
+    fn = variant;
+    variant = true;
+  }
+  fn._variant = variant;
   var listHasChanged = !emitter.hasListeners(feature);
   emitter.on(feature, fn);
   fn(exports(feature));
@@ -144,6 +150,20 @@ exports.list = function() {
   return select(keys(_callbacks), function(feature) {
     return !!_callbacks[feature].length;
   });
+};
+
+/**
+ * List the options for a feature
+ */
+
+exports.options = function(feature) {
+  var subs = emitter._callbacks[feature];
+  var opts = [];
+  each(subs, function(sub) {
+    var v = sub._variant;
+    if (!~opts.indexOf(v)) opts.push(v);
+  });
+  return opts;
 };
 
 /**
