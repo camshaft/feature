@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "keywords": [],
   "dependencies": {
-    "yields/store": "*",
+    "yields/store": "0.2.0",
     "component/cookie": "*",
     "component/indexof": "*",
     "component/emitter": "*",
